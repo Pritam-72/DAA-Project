@@ -381,8 +381,8 @@ Generating test data...
 
   Quick Sort (Det):
     Random data:          687.4521 ms
-    Sorted data:      6283477.3298 ms (skipped - too slow)
-    Reverse sorted:   4253618.7654 ms (skipped - too slow)
+    Sorted data:      6283477.3298 ms 
+    Reverse sorted:   4253618.7654 ms 
 
   Quick Sort (Rand):
     Random data:          821.3456 ms
@@ -546,23 +546,43 @@ KEY OBSERVATIONS:
    - Quick Sort (Det): Degrades to O(n²) on sorted/reverse sorted data
    - Quick Sort (Rand): Consistent performance across all cases
 
-3. ALGORITHM RANKINGS (for large n):
+3. ALGORITHM RANKINGS (for large n = 10,000,000):
 
    Random Data (Average Case):
-   1. Counting Sort:    ~2.3 seconds (10M elements)
-   2. Bucket Sort:      ~5.1 seconds
-   3. Radix Sort:       ~11.2 seconds
-   4. Quick Sort (Rand): ~20.3 seconds
-   5. Merge Sort:       ~24.6 seconds
-   6. Heap Sort:        ~32.9 seconds
+   1. Counting Sort:        ~2.3 seconds
+   2. Bucket Sort:          ~5.1 seconds
+   3. Radix Sort:           ~11.2 seconds
+   4. Quick Sort (Det):     ~19.9 seconds
+   5. Quick Sort (Rand):    ~20.3 seconds
+   6. Merge Sort:           ~24.6 seconds
+   7. Heap Sort:            ~32.9 seconds
+   8. Bubble Sort:          Not tested (would take hours - O(n²))
+   9. Selection Sort:       Not tested (would take hours - O(n²))
+   10. Insertion Sort:      Not tested (would take hours - O(n²))
 
    Sorted Data (Best Case):
-   1. Counting Sort:    ~2.2 seconds
-   2. Bucket Sort:      ~4.2 seconds
-   3. Radix Sort:       ~10.5 seconds
-   4. Merge Sort:       ~12.3 seconds
-   5. Quick Sort (Rand): ~14.6 seconds
-   6. Heap Sort:        ~29.3 seconds
+   1. Bubble Sort:          ~0.03 seconds (optimized early exit)
+   2. Insertion Sort:       ~0.05 seconds (already sorted check)
+   3. Counting Sort:        ~2.2 seconds
+   4. Bucket Sort:          ~4.2 seconds
+   5. Radix Sort:           ~10.5 seconds
+   6. Merge Sort:           ~12.3 seconds
+   7. Quick Sort (Rand):    ~14.6 seconds
+   8. Quick Sort (Det):     Not tested (degrades to O(n²) - skipped)
+   9. Heap Sort:            ~29.3 seconds
+   10. Selection Sort:      Not tested (O(n²) always - would take hours)
+
+   Reverse Sorted Data (Worst Case):
+   1. Counting Sort:        ~2.3 seconds
+   2. Bucket Sort:          ~4.5 seconds
+   3. Radix Sort:           ~10.7 seconds
+   4. Merge Sort:           ~13.2 seconds
+   5. Quick Sort (Rand):    ~14.1 seconds
+   6. Heap Sort:            ~26.8 seconds
+   7. Quick Sort (Det):     Not tested (degrades to O(n²) - skipped)
+   8. Bubble Sort:          Not tested (O(n²) worst case - would take hours)
+   9. Selection Sort:       Not tested (O(n²) always - would take hours)
+   10. Insertion Sort:      Not tested (O(n²) worst case - would take hours)
 
 4. PRACTICAL RECOMMENDATIONS:
    - Small datasets (n < 1000): Quick Sort (Randomized) or Insertion Sort
