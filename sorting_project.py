@@ -362,7 +362,13 @@ def measure_time(sort_func, arr, trials=3):
 
 def run_performance_tests(input_sizes, save_csv=True):
     """
-    Run comprehensive performance tests
+    Run comprehensive performance tests for experimental analysis
+    
+    Measures actual execution time using high-resolution timer (time.perf_counter())
+    Tests under three input conditions:
+    - Random data (average case)
+    - Sorted data (best case for some algorithms)
+    - Reverse sorted data (worst case for comparison-based sorts)
     
     Parameters:
     - input_sizes: list of array sizes to test
@@ -374,40 +380,52 @@ def run_performance_tests(input_sizes, save_csv=True):
     results = {name: {'random': {}, 'sorted': {}, 'reverse': {}} 
                for name in ALGORITHMS.keys()}
     
-    print("=" * 60)
-    print("PERFORMANCE TESTING")
-    print("=" * 60)
+    print("=" * 70)
+    print("EXPERIMENTAL ANALYSIS - PERFORMANCE TESTING")
+    print("=" * 70)
     
     # Efficient algorithms that can handle larger sizes
     efficient_algos = ['Merge Sort', 'Quick Sort (Det)', 'Quick Sort (Rand)', 
                        'Heap Sort', 'Counting Sort', 'Radix Sort', 'Bucket Sort']
     
     for size in input_sizes:
-        print(f"\nTesting size: {size}")
+        print(f"\n{'=' * 70}")
+        print(f"Input Size: n = {size:,}")
+        print(f"{'=' * 70}")
         
         # Generate test data
+        print("Generating test data...")
         random_data = generate_random_data(size)
         sorted_data = generate_sorted_data(size)
         reverse_data = generate_reverse_sorted_data(size)
         
         # Decide which algorithms to test based on size
+        # O(n²) algorithms are too slow for large inputs
         algos_to_test = ALGORITHMS.keys() if size <= 5000 else efficient_algos
         
         for name in algos_to_test:
             func = ALGORITHMS[name]
-            print(f"  Testing {name}...", end='')
+            print(f"\n  {name}:")
             
             # For very large inputs, reduce trials to 1 to save time
             num_trials = 1 if size >= 100000 else 3
             
             try:
                 # Test each data condition
-                results[name]['random'][size] = measure_time(func, random_data, trials=num_trials)
-                results[name]['sorted'][size] = measure_time(func, sorted_data, trials=num_trials)
-                results[name]['reverse'][size] = measure_time(func, reverse_data, trials=num_trials)
-                print(" ✓")
+                rand_time = measure_time(func, random_data, trials=num_trials)
+                sort_time = measure_time(func, sorted_data, trials=num_trials)
+                rev_time = measure_time(func, reverse_data, trials=num_trials)
+                
+                results[name]['random'][size] = rand_time
+                results[name]['sorted'][size] = sort_time
+                results[name]['reverse'][size] = rev_time
+                
+                print(f"    Random data:        {rand_time:>10.4f} ms")
+                print(f"    Sorted data:        {sort_time:>10.4f} ms")
+                print(f"    Reverse sorted:     {rev_time:>10.4f} ms")
+                
             except Exception as e:
-                print(f" Error: {e}")
+                print(f"    Error: {e}")
                 results[name]['random'][size] = None
                 results[name]['sorted'][size] = None
                 results[name]['reverse'][size] = None
@@ -416,9 +434,15 @@ def run_performance_tests(input_sizes, save_csv=True):
     if save_csv:
         save_results_to_csv(results)
     
-    print("\n" + "=" * 60)
-    print("TESTING COMPLETE")
-    print("=" * 60)
+    print("\n" + "=" * 70)
+    print("EXPERIMENTAL ANALYSIS COMPLETE")
+    print("=" * 70)
+    print("\nSummary:")
+    print(f"  - Tested {len(input_sizes)} different input sizes")
+    print(f"  - Tested {len(ALGORITHMS)} sorting algorithms")
+    print(f"  - Three input conditions per test (Random, Sorted, Reverse)")
+    print(f"  - Used high-resolution timer (time.perf_counter())")
+    print(f"  - Results saved to CSV and ready for visualization")
     
     return results
 
@@ -680,12 +704,19 @@ def main():
     
     print("\n✓ All algorithms passed correctness tests!")
     
-    # Define input sizes for testing
-    # Use smaller sizes for O(n²) algorithms and larger for others
+    # Define input sizes for testing (as per project requirements)
+    # Use smaller sizes for O(n²) algorithms and larger for efficient algorithms
     input_sizes = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000]
     
+    print("\n2. Running experimental analysis...")
+    print("   Input sizes:", input_sizes)
+    print("   Test conditions:")
+    print("     - Random data (average case)")
+    print("     - Sorted data (best case)")
+    print("     - Reverse sorted data (worst case)")
+    print("   Using high-resolution performance counter (time.perf_counter())")
+    
     # Run performance tests
-    print("\n2. Running performance tests...")
     results = run_performance_tests(input_sizes, save_csv=True)
     
     # Create visualizations
